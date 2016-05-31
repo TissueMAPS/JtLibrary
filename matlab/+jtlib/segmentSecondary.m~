@@ -499,8 +499,9 @@ function [secondaryLabelMatrixImage, editedPrimaryBinaryImage, thresholdArray] =
             %%% The +1 increment accounts for the fact that there are zeros in the
             %%% image, while the LabelsUsed starts at 1.
             LabelsUsed(ActualObjectsLabelMatrixImage3(LabelLocations(2:end))+1) = editedPrimaryLabelMatrixImage(LabelLocations(2:end));
-%             FinalLabelMatrixImagePre = LabelsUsed(ActualObjectsLabelMatrixImage3+1);
-            FinalLabelMatrixImagePre = ActualObjectsLabelMatrixImage3;
+            LabelsUsed = LabelsUsed +1;
+            FinalLabelMatrixImagePre = LabelsUsed(ActualObjectsLabelMatrixImage3 + 1);
+%             FinalLabelMatrixImagePre = ActualObjectsLabelMatrixImage3;
             
             %%% [PLab] hack. save memory
             clear FinalBinaryImage LabelsUsed LabelLocations;
