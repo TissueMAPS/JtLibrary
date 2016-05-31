@@ -1,7 +1,7 @@
 # Created on 25-March-2016 by Dr. Saadia Iftikhar, saadia.iftikhar@fmi.ch
 # ---------------------------------------------------------------------
 
-from skimage.filters import th_otsu
+from skimage.filters import threshold_otsu
 from skimage.segmentation import clear_border
 from skimage.measure import label
 from skimage.measure import regionprops
@@ -9,15 +9,15 @@ from scipy import ndimage as ndi
 import numpy as np
 import skimage as sk 
 from skimage.morphology import watershed, binary_dilation
-from scipy.sparse import *
-from scipy import *
-
+#from scipy.sparse import *
+#from scipy import *
+from matplotlib import pyplot as plt
 
 def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                      edited_primary_label_matrix_image=None,th_correction=None,
                      minimum_th=None,maximum_th=None,*args,**kwargs):
     
-    
+      
     use_as_label_in_case_no_cackground_present = \
                                             prelim_primary_label_matrix_image
         
@@ -28,10 +28,10 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
     
     num_ths_to_test = len(th_correction)
     th_array = np.array(num_ths_to_test, dtype = object)
-    th_method = 'Otsu Global'
-    pobject = 10
+#    th_method = 'Otsu Global'
+#    pobject = 10
     
-    th_array = th_otsu(orig_image)
+    th_array = threshold_otsu(orig_image)
     th_array1 = np.zeros(len(th_correction))
     
     if num_ths_to_test > 1:
@@ -50,7 +50,7 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
     th_array = np.array(numeric_ths, dtype=object)
     num_ths_to_test = len(th_array1)
     
-    thresh = th_otsu(edited_primary_label_matrix_image)
+    thresh = threshold_otsu(edited_primary_label_matrix_image)
     edited_primary_binary_image = np.int32(
                                     edited_primary_label_matrix_image > thresh)
        
@@ -85,10 +85,14 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
         
     else:
         for k in range(1,num_ths_to_test):
+            print k
 
             th_orig_image = np.int32(orig_image > th_array1[k])
             
             inverted_th_orig_image = 1 - th_orig_image
+            
+            print prelim_primary_binary_image.shape
+            print inverted_th_orig_image.shape
             
             binary_marker_image_pre = np.logical_or(prelim_primary_binary_image,  
                                                  inverted_th_orig_image)
@@ -107,12 +111,12 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                                    labels_in,
                                    np.ones((3, 3), bool),
                                    mask=watershed_mask)
-            
+                        
             black_watershed_lines_pre = labels_out
             
             black_watershed_lines = black_watershed_lines_pre 
             
-            thresh1 = th_otsu(black_watershed_lines)
+            thresh1 = threshold_otsu(black_watershed_lines)
             
             secondary_objects1 = np.int32(black_watershed_lines > thresh1)
             
@@ -158,16 +162,26 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             final_binary_image_pre = second_watershed
             
             final_binary_image = ndi.binary_fill_holes(final_binary_image_pre)
+            
             actual_objects_label_matrix_image3 = label(final_binary_image)
-                        
-            labels_used, label_locations = np.unique(
-                                           edited_primary_label_matrix_image, 
-                                           return_index=True)
+            
+#            labels_used, label_locations = np.unique(
+#                                           edited_primary_label_matrix_image, 
+#                                           return_index=True)
+            
+#            print(labels_used)
                                     
-            final_label_matrix_imagePre = labels_used[
-                                            actual_objects_label_matrix_image3]
+#            final_label_matrix_imagePre = labels_used[
+#                                            actual_objects_label_matrix_image3]
+                                    
+            final_label_matrix_imagePre = actual_objects_label_matrix_image3
                                             
+           # print final_label_matrix_imagePre.shape
+                                          
             final_label_matrix_image = final_label_matrix_imagePre
+            
+            plt.imshow(actual_objects_label_matrix_image3, cmap='Greys_r')
+            plt.show()
             
             final_label_matrix_image[edited_primary_label_matrix_image != 0] = \
                 edited_primary_label_matrix_image[ \
@@ -198,7 +212,7 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
         dilated_prelim_sec_label_matrix_image_mini = binary_dilation(
                                                      final_label_matrix_image)
         
-        thresh3 = th_otsu(dilated_prelim_sec_label_matrix_image_mini)
+        thresh3 = threshold_otsu(dilated_prelim_sec_label_matrix_image_mini)
         
         dilated_prelim_sec_binary_image_mini = \
                             dilated_prelim_sec_label_matrix_image_mini > thresh3
@@ -280,8 +294,8 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             if num_objects >= 1:
                 patch_for_primary_object = np.zeros(num_objects)
                                 
-#                for k in range(num_objects):
-                for k in range(100,150):
+                for k in range(num_objects):
+#                for k in range(100,150):
                     
                     n1 = np.int32(north1[k])
                     s1 = np.int32(south1[k])
