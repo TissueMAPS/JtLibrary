@@ -11,7 +11,7 @@ import skimage as sk
 from skimage.morphology import watershed, binary_dilation
 #from scipy.sparse import *
 #from scipy import *
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                      edited_primary_label_matrix_image=None,th_correction=None,
@@ -91,8 +91,8 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             
             inverted_th_orig_image = 1 - th_orig_image
             
-            print prelim_primary_binary_image.shape
-            print inverted_th_orig_image.shape
+#            print prelim_primary_binary_image.shape
+#            print inverted_th_orig_image.shape
             
             binary_marker_image_pre = np.logical_or(prelim_primary_binary_image,  
                                                  inverted_th_orig_image)
@@ -165,28 +165,56 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             
             actual_objects_label_matrix_image3 = label(final_binary_image)
             
-#            labels_used, label_locations = np.unique(
-#                                           edited_primary_label_matrix_image, 
-#                                           return_index=True)
+            labels_used, label_locations = np.unique(
+                                           edited_primary_label_matrix_image, 
+                                           return_index=True)
             
-#            print(labels_used)
+           # print(label_locations[1:-1])
+            
+            actual_objects_label_matrix_image3 =  \
+                                actual_objects_label_matrix_image3.ravel()
+            
+            
+            edited_primary_label_matrix_image =  \
+                                edited_primary_label_matrix_image.ravel()
+            
+            #print edited_primary_label_matrix_image.shape
+            
+            labels_used[actual_objects_label_matrix_image3[label_locations[1:-1]]
+                ] = edited_primary_label_matrix_image[label_locations[1:-1]];
+                         
+            labels_used1 = labels_used[1:-1]
+            # print(labels_used1)
+            
+            final_label_matrix_image_pre = \
+                               labels_used1[actual_objects_label_matrix_image3]
                                     
-#            final_label_matrix_imagePre = labels_used[
-#                                            actual_objects_label_matrix_image3]
-                                    
-            final_label_matrix_imagePre = actual_objects_label_matrix_image3
+            final_label_matrix_image_pre = np.reshape(
+                        final_label_matrix_image_pre, final_binary_image.shape)
                                             
-           # print final_label_matrix_imagePre.shape
-                                          
-            final_label_matrix_image = final_label_matrix_imagePre
+            # print final_label_matrix_image_pre.shape
             
-            plt.imshow(actual_objects_label_matrix_image3, cmap='Greys_r')
-            plt.show()
+            actual_objects_label_matrix_image3 = np.reshape(
+                    actual_objects_label_matrix_image3,final_binary_image.shape)
+                                          
+            edited_primary_label_matrix_image = np.reshape(
+                    edited_primary_label_matrix_image,final_binary_image.shape)
+            
+            final_label_matrix_image = final_label_matrix_image_pre
+            
+#            plt.imshow(final_label_matrix_image, cmap='Greys_r')
+#            plt.show()
             
             final_label_matrix_image[edited_primary_label_matrix_image != 0] = \
                 edited_primary_label_matrix_image[ \
                 edited_primary_label_matrix_image != 0]
             
+            actual_objects_label_matrix_image3 =  \
+                                actual_objects_label_matrix_image3.ravel()
+                                
+            edited_primary_label_matrix_image =  \
+                                edited_primary_label_matrix_image.ravel()
+                                
             if np.max(final_label_matrix_image[:]) < 65535:
                 cell_final_label_matrix_image[k] = np.uint16(
                                                     final_label_matrix_image)
