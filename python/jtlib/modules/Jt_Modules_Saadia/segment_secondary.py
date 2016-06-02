@@ -11,7 +11,7 @@ import skimage as sk
 from skimage.morphology import watershed, binary_dilation
 #from scipy.sparse import *
 #from scipy import *
-#from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 
 def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                      edited_primary_label_matrix_image=None,th_correction=None,
@@ -183,16 +183,19 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             labels_used[actual_objects_label_matrix_image3[label_locations[1:-1]]
                 ] = edited_primary_label_matrix_image[label_locations[1:-1]];
                          
-            labels_used1 = labels_used[1:-1]
-            # print(labels_used1)
+#            labels_used1 = labels_used[1:-1]
+#            print(label_locations)
+#            print(labels_used1)
+#            print(actual_objects_label_matrix_image3.shape)
             
-            final_label_matrix_image_pre = \
-                               labels_used1[actual_objects_label_matrix_image3]
-                                    
-            final_label_matrix_image_pre = np.reshape(
-                        final_label_matrix_image_pre, final_binary_image.shape)
+#            final_label_matrix_image_pre = \
+#                               labels_used1[actual_objects_label_matrix_image3]
+#                                    
+#            final_label_matrix_image_pre = np.reshape(
+#                        final_label_matrix_image_pre, final_binary_image.shape)
                                             
             # print final_label_matrix_image_pre.shape
+                                           
             
             actual_objects_label_matrix_image3 = np.reshape(
                     actual_objects_label_matrix_image3,final_binary_image.shape)
@@ -200,20 +203,22 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             edited_primary_label_matrix_image = np.reshape(
                     edited_primary_label_matrix_image,final_binary_image.shape)
             
+            final_label_matrix_image_pre = actual_objects_label_matrix_image3
+            
             final_label_matrix_image = final_label_matrix_image_pre
             
-#            plt.imshow(final_label_matrix_image, cmap='Greys_r')
-#            plt.show()
+            plt.imshow(final_label_matrix_image, cmap='Greys_r')
+            plt.show()
             
             final_label_matrix_image[edited_primary_label_matrix_image != 0] = \
                 edited_primary_label_matrix_image[ \
                 edited_primary_label_matrix_image != 0]
             
-            actual_objects_label_matrix_image3 =  \
-                                actual_objects_label_matrix_image3.ravel()
+#            actual_objects_label_matrix_image3 =  \
+#                                actual_objects_label_matrix_image3.ravel()
                                 
-            edited_primary_label_matrix_image =  \
-                                edited_primary_label_matrix_image.ravel()
+#            edited_primary_label_matrix_image =  \
+#                                edited_primary_label_matrix_image.ravel()
                                 
             if np.max(final_label_matrix_image[:]) < 65535:
                 cell_final_label_matrix_image[k] = np.uint16(
@@ -297,7 +302,8 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                 if north11 < 1:
                     north11 = 1
                 north1.append(north11)
-               
+                
+                
                 south11=np.ceil(region.bbox[1] + region.bbox[3] +  
                         distance_to_object_max + 1)
                 if south11 > siz[0]:
@@ -319,6 +325,7 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
             
             num_objects = len(regionprops(loaded_image))
             
+            
             if num_objects >= 1:
                 patch_for_primary_object = np.zeros(num_objects)
                                 
@@ -336,7 +343,7 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                     labelmini = label(bwmini_image)
                     
                     mini_image_nuclei = \
-                                edited_primary_label_matrix_image[n1:s1,w1:e1]
+                                edited_primary_label_matrix_image[n1:s1, w1:e1]
                                 
 #                    bw_parent_of_interest = np.int32(mini_image_nuclei == k)
                     bw_parent_of_interest = np.int32(mini_image_nuclei > 0)
@@ -346,7 +353,7 @@ def segment_secondary(orig_image=None,prelim_primary_label_matrix_image=None,
                     if np.max(new_child_id) < 0:
                         patch_for_primary_object[k] = 1
                     else:                   
-                        with_parent_ix = np.unique(new_child_id)  
+#                        with_parent_ix = np.unique(new_child_id)  
 #                        bw_out_cell_body = labelmini * np.int32(
 #                                            labelmini == with_parent_ix)                        
 #                        bw_out_cell_body = filter(
