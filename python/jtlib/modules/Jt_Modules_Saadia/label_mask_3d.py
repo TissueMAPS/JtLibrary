@@ -56,7 +56,8 @@ def label_mask_3d(mask, plot=False):
     
             output1.append(label_image) 
             
-        output = np.dstack(output1)  
+        output = np.int32(np.dstack(output1))
+        
         # print output.shape
         
         output = {'label_image': output}    
