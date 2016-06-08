@@ -1,8 +1,6 @@
 import logging
 import numpy as np
-#from .. import utils
-from skimage.measure import label
-import matplotlib.pyplot as plt
+from .. import utils
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +29,11 @@ def label_mask_3d(mask, plot=False):
     '''
 
     siz = mask.shape
-    output1 = []
+    label_image1 = []
     
     if (siz[2] == 1):
         mask = mask > 0
-        #label_image = utils.label_image(mask)
-        label_image = label(mask)
+        label_image = utils.label_image(mask)
     
         logger.info('identified %d objects', len(np.unique(label_image))-1)
     
@@ -44,23 +41,17 @@ def label_mask_3d(mask, plot=False):
         
     elif (siz[2] > 1):
         
-        for i in range(0,siz[2]):
-            
+        for i in range(1,siz[2]):
+
             mask1 = mask[:,:,i] > 0
-            label_image = label(mask1)
-           # label_image = utils.label_image(mask1)
-#            plt.imshow(label_image, cmap='Greys_r')
-#            plt.show()
+            label_image = utils.label_image(mask1)
     
             logger.info('identified %d objects', len(np.unique(label_image))-1)
-    
-            output1.append(label_image) 
             
-        output = np.dstack(output1)  
-        # print output.shape
+            label_image1.append(label_image)
+    
+        output = {'label_image': label_image1}
         
-        output = {'label_image': output}    
-
             
         
     if plot:
