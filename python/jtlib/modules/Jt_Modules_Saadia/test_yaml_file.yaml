@@ -1,9 +1,0 @@
----
-description: ''
-input:
-     channels:
-     - name: cycle-0-wavelength-1
-       correct: true
-pipeline:
--active: true
-handles: smooth_image.py

@@ -33,32 +33,25 @@ def label_mask_3d(mask, plot=False):
     siz = mask.shape
     output1 = []
     
-    if (siz[2] == 1):
+    if (len(siz) == 2):
         mask = mask > 0
-        #label_image = utils.label_image(mask)
         label_image = label(mask)
     
         logger.info('identified %d objects', len(np.unique(label_image))-1)
     
         output = {'label_image': label_image}
         
-    elif (siz[2] > 1):
+    elif (len(siz) > 2):
         
         for i in range(0,siz[2]):
             
             mask1 = mask[:,:,i] > 0
             label_image = label(mask1)
-           # label_image = utils.label_image(mask1)
-#            plt.imshow(label_image, cmap='Greys_r')
-#            plt.show()
-    
             logger.info('identified %d objects', len(np.unique(label_image))-1)
     
             output1.append(label_image) 
             
         output = np.dstack(output1)  
-        # print output.shape
-        
         output = {'label_image': output}    
 
             
