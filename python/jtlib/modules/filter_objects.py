@@ -38,30 +38,72 @@ def filter_objects(label_image, feature, threshold, remove, relabel, plot):
     if label_image.dtype != np.int32:
         raise TypeError('Argument label image must have data type int32.')
 
-    regions = skimage.measure.regionprops(label_image)
-    if remove == 'above':
-        ids_to_keep = [r['label'] for r in regions if r[feature] < threshold]
-    elif remove == 'below':
-        ids_to_keep = [r['label'] for r in regions if r[feature] > threshold]
-    else:
-        raise ValueError(
-                'Argument "remove" must be a either "above" or "below"')
-
-    filtered_image = np.zeros(label_image.shape)
-    for ix in ids_to_keep:
-        filtered_image[label_image == ix] = ix
-
-    n_removed = len(np.unique(label_image)) - len(np.unique(filtered_image))
-
-    if relabel:
-        filtered_image = utils.label_image(filtered_image > 0)
-
-    output = {'filtered_image': filtered_image}
+    
+    siz = label_image.shape
+    output1 = []
+    
+    if (len(siz) == 2):
+        
+        label_image1 = label_image
+        regions = skimage.measure.regionprops(label_image)
+        if remove == 'above':
+            ids_to_keep = [r['label'] for r in regions if r[feature] < threshold]
+        elif remove == 'below':
+            ids_to_keep = [r['label'] for r in regions if r[feature] > threshold]
+        else:
+            raise ValueError(
+                    'Argument "remove" must be a either "above" or "below"')
+    
+        filtered_image = np.zeros(label_image.shape)
+        for ix in ids_to_keep:
+            filtered_image[label_image == ix] = ix
+    
+        n_removed = len(np.unique(label_image)) - len(np.unique(filtered_image))
+    
+        if relabel:
+            filtered_image = utils.label_image(filtered_image > 0)
+    
+        output = {'filtered_image': filtered_image}
+        
+    elif (len(siz) > 2):
+        
+        for i in range(0,siz[2]):
+            
+            label_image1 = label_image[:,:,i]
+        
+            regions = skimage.measure.regionprops(label_image1)
+            
+            if remove == 'above':
+                ids_to_keep = [r['label'] for 
+                                        r in regions if r[feature] < threshold]
+            elif remove == 'below':
+                ids_to_keep = [r['label'] for 
+                                        r in regions if r[feature] > threshold]
+            else:
+                raise ValueError(
+                    'Argument "remove" must be a either "above" or "below"')
+    
+            filtered_image = np.zeros(label_image1.shape)
+            for ix in ids_to_keep:
+                filtered_image[label_image1 == ix] = ix
+    
+            n_removed = len(np.unique(label_image1)
+                        ) - len(np.unique(filtered_image))
+    
+            if relabel:
+                filtered_image = utils.label_image(filtered_image > 0)
+            
+            output1.append(filtered_image)
+    
+        output = {'filtered_image': output1}
+        
+    
+    
     if plot:
         from .. import plotting
 
         plots = [
-            plotting.create_mask_image_plot(label_image, 'ul'),
+            plotting.create_mask_image_plot(label_image1, 'ul'),
             plotting.create_mask_image_plot(filtered_image, 'ur'),
         ]
 

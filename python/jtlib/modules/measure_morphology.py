@@ -1,4 +1,4 @@
-import jtlib.features
+import features
 
 
 def measure_morphology(label_image, plot=False):
@@ -25,7 +25,7 @@ def measure_morphology(label_image, plot=False):
     --------
     :py:class:`jtlib.features.Morphology`
     '''
-    f = jtlib.features.Morphology(
+    f = features.Morphology(
                 label_image=label_image
     )
 

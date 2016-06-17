@@ -74,19 +74,19 @@ def threshold_image(image, correction_factor=1, min_threshold=None,
         plots = [
             plotting.create_overlay_image_plot(image, thresh_image, 'ul'),
             plotting.create_mask_image_plot(thresh_image, 'ur'),
-            [
-                plotting.create_histogram_plot(image.flatten(), 'll'),
-                plotting.create_line_plot(
-                        [0, np.prod(image.shape)/100],
-                        [corr_thresh, corr_thresh],
-                        'll',
-                        color=plotting.OBJECT_COLOR, line_width=4,
-                    )
-            ]
+            # [
+            #     plotting.create_histogram_plot(image.flatten(), 'll'),
+            #     plotting.create_line_plot(
+            #             [0, np.prod(image.shape)/100],
+            #             [corr_thresh, corr_thresh],
+            #             'll',
+            #             color=plotting.OBJECT_COLOR, line_width=4,
+            #         )
+            # ]
         ]
 
         outputs['figure'] = plotting.create_figure(
-                        plots, plot_is_image=[True, True, False],
+                        plots, plot_is_image=[True, True],
                         title='''thresholded image at pixel value %s
                         ''' % thresh
         )

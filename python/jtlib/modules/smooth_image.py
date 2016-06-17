@@ -16,7 +16,6 @@ def smooth_image(image, filter_name, filter_size, sigma=0, sigma_color=0,
     For more information on "median" filter_name see
     `scikit-image docs <http://scikit-image.org/docs/dev/api/skimage.filters.html#median>`_.
 
-
     Parameters
     ----------
     image: numpy.ndarray
@@ -92,9 +91,11 @@ def smooth_image(image, filter_name, filter_size, sigma=0, sigma_color=0,
         clip_value = np.percentile(image, 99.99)
         data = [
             plotting.create_intensity_image_plot(
-                        image, 'ul', clip_value=clip_value),
+                image, 'ul', clip_value=clip_value
+            ),
             plotting.create_intensity_image_plot(
-                        smoothed_image, 'ur', clip_value=clip_value),
+                smoothed_image, 'ur', clip_value=clip_value
+            ),
         ]
 
         output['figure'] = plotting.create_figure(
