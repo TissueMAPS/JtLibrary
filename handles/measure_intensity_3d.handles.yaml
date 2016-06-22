@@ -1,0 +1,38 @@
+---
+input:
+
+    - name: label_image
+      type: LabelImage
+      key:
+      help: >
+        Labeled image containing the objects
+        for which Intensity features should be extracted.
+
+    - name: intensity_image
+      type: IntensityImage
+      key: 
+      help: >
+        Greyscale image whose pixel values should be used for the measurement.
+
+    - name: channel_name
+      type: Channel
+      value:
+      help: Name of the channel corresponding to <i>intensity_image</i>.
+
+    - name: plot
+      type: Plot
+      value:
+      options: [true, false]
+      help: Should a figure be created?
+
+output:
+
+    - name: measurements
+      type: Measurement
+      ref: objects_name
+      help: Extracted intensity features.
+
+    - name: figure
+      type: Figure
+
+
