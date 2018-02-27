@@ -41,8 +41,8 @@ def main(mask_1, mask_2, logical_operation, plot=False):
     -------
     jtmodules.combine_objects.Output
     '''
-    mask_1 = mask_1 > 0
-    mask_2 = mask_2 > 0
+    mask_1 = mask_1 != 0
+    mask_2 = mask_2 != 0
     
     if logical_operation == "AND":
         logger.info('Apply logical AND')
@@ -55,8 +55,8 @@ def main(mask_1, mask_2, logical_operation, plot=False):
         combined_mask = np.logical_xor(mask_1, mask_2)
     else:
             raise ValueError(
-                'Arugment "filter_name" can be one of the following:\n'
-                '"average", "gaussian", "median" or "bilateral"'
+                'Arugment "logical_operation" can be one of the following:\n'
+                '"AND", "OR", "EXCLUSIVE_OR"'
             )
 
     if plot:
